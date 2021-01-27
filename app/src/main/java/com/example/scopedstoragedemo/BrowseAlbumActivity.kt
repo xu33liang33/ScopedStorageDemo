@@ -19,7 +19,8 @@ class BrowseAlbumActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_browse_album)
-        recyclerView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        recyclerView.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 recyclerView.viewTreeObserver.removeOnPreDrawListener(this)
                 val columns = 3
@@ -35,11 +36,19 @@ class BrowseAlbumActivity : AppCompatActivity() {
 
     private fun loadImages(adapter: AlbumAdapter) {
         thread {
-            val cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, "${MediaStore.MediaColumns.DATE_ADDED} desc")
+            val cursor = contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null,
+                null,
+                null,
+                "${MediaStore.MediaColumns.DATE_ADDED} desc"
+            )
             if (cursor != null) {
                 while (cursor.moveToNext()) {
-                    val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID))
-                    val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    val id =
+                        cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID))
+                    val uri =
+                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     imageList.add(uri)
                 }
                 cursor.close()

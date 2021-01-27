@@ -33,10 +33,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val permissionsToRequire = ArrayList<String>()
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             permissionsToRequire.add(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             permissionsToRequire.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
         if (!permissionsToRequire.isEmpty()) {
@@ -63,26 +71,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 0) {
             for (result in grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "You must allow all the permissions.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "You must allow all the permissions.", Toast.LENGTH_SHORT)
+                        .show()
                     finish()
                 }
             }
         }
     }
 
-    private fun addBitmapToAlbum(bitmap: Bitmap, displayName: String, mimeType: String, compressFormat: Bitmap.CompressFormat) {
+    private fun addBitmapToAlbum(
+        bitmap: Bitmap,
+        displayName: String,
+        mimeType: String,
+        compressFormat: Bitmap.CompressFormat
+    ) {
         val values = ContentValues()
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
         values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM)
         } else {
-            values.put(MediaStore.MediaColumns.DATA, "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_DCIM}/$displayName")
+            values.put(
+                MediaStore.MediaColumns.DATA,
+                "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_DCIM}/$displayName"
+            )
         }
         val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         if (uri != null) {
@@ -97,7 +118,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadFile(fileUrl: String, fileName: String) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            Toast.makeText(this, "You must use device running Android 10 or higher", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "You must use device running Android 10 or higher",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
         thread {
@@ -120,13 +145,17 @@ class MainActivity : AppCompatActivity() {
                         val buffer = ByteArray(1024)
                         var bytes = bis.read(buffer)
                         while (bytes >= 0) {
-                            bos.write(buffer, 0 , bytes)
+                            bos.write(buffer, 0, bytes)
                             bos.flush()
                             bytes = bis.read(buffer)
                         }
                         bos.close()
                         runOnUiThread {
-                            Toast.makeText(this, "$fileName is in Download directory now.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                "$fileName is in Download directory now.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -164,13 +193,14 @@ class MainActivity : AppCompatActivity() {
         val cursor = contentResolver.query(uri, null, null, null, null)
         if (cursor != null && cursor.count > 0) {
             cursor.moveToFirst()
-            fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME))
+            fileName =
+                cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME))
             cursor.close()
         }
         return fileName
     }
 
-    private fun  copyUriToExternalFilesDir(uri: Uri, fileName: String) {
+    private fun copyUriToExternalFilesDir(uri: Uri, fileName: String) {
         thread {
             val inputStream = contentResolver.openInputStream(uri)
             val tempDir = getExternalFilesDir("temp")
@@ -189,7 +219,8 @@ class MainActivity : AppCompatActivity() {
                 bos.close()
                 fos.close()
                 runOnUiThread {
-                    Toast.makeText(this, "Copy file into $tempDir succeeded.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Copy file into $tempDir succeeded.", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }

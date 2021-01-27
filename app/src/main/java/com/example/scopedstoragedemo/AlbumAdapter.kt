@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class AlbumAdapter(val context: Context, val imageList: List<Uri>, val imageSize: Int) : RecyclerView.Adapter<AlbumAdapter.ViewHolder>() {
+class AlbumAdapter(val context: Context, val imageList: List<Uri>, val imageSize: Int) :
+    RecyclerView.Adapter<AlbumAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)
@@ -27,7 +28,8 @@ class AlbumAdapter(val context: Context, val imageList: List<Uri>, val imageSize
         holder.imageView.layoutParams.width = imageSize
         holder.imageView.layoutParams.height = imageSize
         val uri = imageList[position]
-        val options = RequestOptions().placeholder(R.drawable.album_loading_bg).override(imageSize, imageSize)
+        val options =
+            RequestOptions().placeholder(R.drawable.album_loading_bg).override(imageSize, imageSize)
         Glide.with(context).load(uri).apply(options).into(holder.imageView)
     }
 
